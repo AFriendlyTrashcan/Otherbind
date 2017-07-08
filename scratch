@@ -1,0 +1,5 @@
+AppID
+1 or 0 for whether to change language
+Index of the language
+Comma separated open chat keys i.e. (ENTER,T)
+Comma separated close chat keys i.e. (ENTER,ESCAPE)
