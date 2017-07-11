@@ -9,7 +9,7 @@ public:
     std::string getAppID();
     bool isUIRunning();
     void setLayout(std::string layoutArgs);
-
+    int whatPlatform();
 };
 
 #endif // MIXEDPLATFORMS_H

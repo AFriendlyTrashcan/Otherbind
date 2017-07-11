@@ -27,24 +27,30 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     preferences.cpp \
+    loopthread.cpp \
     platform_nonspecific.cpp \
-    platform_linux.cpp \
-    loopthread.cpp
+    gamesettings.cpp
+# Add C++ files for filling up mixedplatforms.h
+unix:!macx: SOURCES += platform_linux.cpp
+macx:       SOURCES += platform_windows.cpp
+win32:      SOURCES += platform_macos.cpp
 
 HEADERS += \
         mainwindow.h \
     mainwindow.h \
     preferences.h \
     mixedplatforms.h \
-    loopthread.h
+    loopthread.h \
+    gamesettings.h
 
 FORMS += \
         mainwindow.ui \
     mainwindow.ui \
-    preferences.ui
+    preferences.ui \
+    gamesettings.ui
 
 DISTFILES += \
-    languages \
     configs \
     gameConfigs \
-    scratch
+    scratch \
+    languages

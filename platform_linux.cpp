@@ -30,3 +30,7 @@ void mixedPlatforms::setLayout(string layoutArgs){
     layoutArgs = "setxkbmap -layout " + layoutArgs;
     system(layoutArgs.c_str());
 }
+
+int mixedPlatforms::whatPlatform(){
+    return 0;
+}

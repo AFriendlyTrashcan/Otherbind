@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <QString>
+#include <QDebug>
 
 using namespace std;
 
@@ -21,14 +22,12 @@ Preferences::Preferences(int pNL, bool pW, QWidget *parent) :
     prefWorkaround = pW;
     int prefLangCount = 0;
     ifstream langStream;
-    string readLang;
-    bool langSwitch = false;
+    string langLine;
     langStream.open("../otherbind/languages");
-    while(langStream >> readLang){
-        if(!langSwitch){
-            ui->setYourLayout->addItem(QString::fromStdString(readLang));
+    while(getline(langStream, langLine)){
+        if(prefLangCount == 0 || prefLangCount % 4 == 0){
+            ui->setYourLayout->addItem(QString::fromStdString(langLine));
         }
-        langSwitch = !langSwitch;
         prefLangCount++;
     }
     ui->setYourLayout->setCurrentIndex(prefNewLang);

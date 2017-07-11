@@ -40,19 +40,6 @@ void loadConfigs(){
     }
 }
 
-void loadLangs(){
-    ifstream langStream;
-    string readLang;
-    bool langSwitch = false;
-    while(langStream >> readLang){
-        if(!langSwitch){
-            langs[langCount][0] = readLang;
-        }else{
-            langs[langCount][1] = readLang;
-        }
-    }
-}
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow){

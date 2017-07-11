@@ -120,7 +120,21 @@ void loopThread::run(){
             }
             if(gameWorkaround && layoutSet){
                 layoutSet = false;
-                mp.setLayout("us -variant dvp");
+                ifstream langRead;
+                string langLine;
+                bool langSection = false;
+                int langCount = 0;
+                langRead.open("../otherbind/languages");
+                while(getline(langRead, langLine)){
+                    langCount++;
+                    if(langCount / 4 == langIndex && langIndex == false){
+                            langSection = true;
+                            langCount = 0;
+                    }
+                    if(langSection == true && langCount == mp.whatPlatform() + 1){
+                        mp.setLayout(langLine);
+                    }
+                }
             }
         }
     }
