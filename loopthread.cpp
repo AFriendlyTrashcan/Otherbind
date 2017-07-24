@@ -12,6 +12,7 @@ using namespace std;
 
 bool globalGameWorkaround;
 int globalGameLangIndex;
+string langComms[100];
 bool gameRunning = false;
 bool layoutSet = false;
 bool gameWorkaround;
@@ -55,87 +56,104 @@ void populateKeys(string commaSeparated, bool inOrOut){
 
 void loopThread::run(){
     mixedPlatforms mp;
+    int prefLangCount = 0;
+    int arrayLangCounts = 0;
+    ifstream langStream;
+    string langLine;
+    langStream.open("../otherbind/languages");
+    while(getline(langStream, langLine)){
+        if(prefLangCount % 4 == 1){
+            langComms[arrayLangCounts] = langLine;
+            qDebug() << QString::fromStdString(langComms[arrayLangCounts]);
+            arrayLangCounts++;
+
+        }
+        prefLangCount++;
+    }
     bool configsRead = false;
     while(true){
         sleep(1);
         if(mp.isUIRunning()){
             gameRunning = true;
             gameAppID = mp.getAppID();
-            //Get Configs
-            if(!configsRead){
-                ifstream gameConfigs;
-                gameConfigs.open("../otherbind/gameConfigs");
-                string readLine;
-                bool readingGame = false;
-                bool finishLooping = false;
-                int postGameLine = 0;
-                while(getline(gameConfigs, readLine) && !finishLooping){
-                    if(postGameLine < 4 && readingGame){
-                        switch(postGameLine){
-                            case 0:
-                                if(readLine != ""){
-                                    gameWorkaround = stoi(readLine);
-                                }else{
-                                    gameWorkaround = globalGameWorkaround;
-                                }
-                                break;
-                            case 1:
-                                if(readLine != ""){
-                                    langIndex = stoi(readLine);
-                                }else{
-                                    langIndex = globalGameLangIndex;
-                                }
-                                break;
-                            case 2:
-                                populateKeys(readLine, false);
-                                break;
-                            case 3:
-                                populateKeys(readLine, true);
-                                break;
-                            default:
-                                //Redundant, just good practice
-                                break;
-                        }
-                        postGameLine++;
-                    }else if(readingGame){
-                        finishLooping = true;
-                        readingGame = false;
+            ifstream gameConfigs;
+            gameConfigs.open("../otherbind/gameConfigs");
+            string readLine;
+            bool readingGame = false;
+            bool finishLooping = false;
+            int postGameLine = 0;
+            while(getline(gameConfigs, readLine) && !finishLooping){
+                if(postGameLine < 4 && readingGame){
+                    switch(postGameLine){
+                        case 0:
+                            if(readLine != ""){
+                                globalGameWorkaround = stoi(readLine);
+                            }
+                            break;
+                        case 1:
+                            if(readLine != ""){
+                                                                qDebug() << QString::fromStdString(readLine);
+                                globalGameLangIndex = stoi(readLine);
+                            }
+                            break;
+                        //Case 2 and 3 deal with an unimplemented function
+                        case 2:
+                            populateKeys(readLine, false);
+                            break;
+                        case 3:
+                            populateKeys(readLine, true);
+                            break;
+                        default:
+                            //Redundant, just good practice
+                            break;
                     }
-                    if(readLine == gameAppID && !configsRead){
-                        readingGame = true;
-                        postGameLine = 0;
-                    }
+                    postGameLine++;
+                }else if(readingGame){
+                    finishLooping = true;
+                    readingGame = false;
                 }
-                finishLooping = false;
-                configsRead = true;
+                if(readLine == gameAppID && !configsRead){
+                    readingGame = true;
+                    postGameLine = 0;
+                }
             }
-            if(gameWorkaround && !layoutSet){
-                mp.setLayout("us");
-                layoutSet = true;
-            }
+            finishLooping = false;
+            configsRead = true;
+        if(gameWorkaround && !layoutSet){
+            qDebug() << "us";
+            mp.setLayout("us");
+            layoutSet = true;
+        }
         }else{
-            if(gameRunning){
-                gameRunning = false;
-                configsRead = false;
-            }
-            if(gameWorkaround && layoutSet){
+            if(layoutSet){
                 layoutSet = false;
-                ifstream langRead;
-                string langLine;
-                bool langSection = false;
-                int langCount = 0;
-                langRead.open("../otherbind/languages");
-                while(getline(langRead, langLine)){
-                    langCount++;
-                    if(langCount / 4 == langIndex && langIndex == false){
-                            langSection = true;
-                            langCount = 0;
-                    }
-                    if(langSection == true && langCount == mp.whatPlatform() + 1){
-                        mp.setLayout(langLine);
-                    }
+                qDebug() << QString::fromStdString(langComms[globalGameLangIndex]);
+                mp.setLayout(langComms[globalGameLangIndex]);
+            }
+            /*
+        if(gameRunning){
+            gameRunning = false;
+            configsRead = false;
+        }
+        if(gameWorkaround && layoutSet){
+            layoutSet = false;
+            ifstream langRead;
+            string langLine;
+            bool langSection = false;
+            int langCount = 0;
+            langRead.open("../otherbind/languages");
+            while(getline(langRead, langLine)){
+                langCount++;
+                if(langCount / 4 == langIndex && langIndex == false){
+                        langSection = true;
+                        langCount = 0;
+                }
+                if(langSection == true && langCount == mp.whatPlatform() + 1){
+                    mp.setLayout(langLine);
                 }
             }
+            */
+
         }
     }
 }

@@ -10,6 +10,7 @@ public:
     bool isUIRunning();
     void setLayout(std::string layoutArgs);
     int whatPlatform();
+    std::string defaultLang();
 };
 
 #endif // MIXEDPLATFORMS_H

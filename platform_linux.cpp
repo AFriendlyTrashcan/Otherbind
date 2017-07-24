@@ -34,3 +34,7 @@ void mixedPlatforms::setLayout(string layoutArgs){
 int mixedPlatforms::whatPlatform(){
     return 0;
 }
+
+string mixedPlatforms::defaultLang(){
+    return "us";
+}
